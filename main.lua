@@ -7,8 +7,14 @@ local gameHeight = 243
 local windowWidth = 1280
 local windowHeight = 720
 
+local paddleSpeed = 200
+
 function getTrueColor(color)
   return color / 255
+end
+
+function getTrueSpeed(speed, dt)
+  return speed * dt
 end
 
 -- Initial love function
@@ -19,6 +25,7 @@ function love.load()
 
   -- game fonts
   local smallFont = love.graphics.newFont('font.ttf', 8)
+  local scoreFont = love.graphics.newFont('font.ttf', 32)
 
   love.graphics.setFont(smallFont)
   
@@ -27,6 +34,29 @@ function love.load()
     resizable = false,
     vsync = true
   })
+
+  playerOneScore = 0
+  playerTwoScore = 0
+
+  playerOneY = 30
+  playerTwoY = gameHeight - 50
+end
+
+-- Main loop function
+function love.update(dt)
+  -- Players movements
+  if (love.keyboard.isDown('w') and playerOneY > 0) then
+    playerOneY = playerOneY - getTrueSpeed(paddleSpeed, dt)
+  elseif (love.keyboard.isDown('s') and playerOneY < gameHeight - 20) then
+    playerOneY = playerOneY + getTrueSpeed(paddleSpeed, dt)
+  end
+
+
+  if (love.keyboard.isDown('up') and playerTwoY > 0) then
+    playerTwoY = playerTwoY - getTrueSpeed(paddleSpeed, dt)
+  elseif (love.keyboard.isDown('down') and playerTwoY < gameHeight - 20) then
+    playerTwoY = playerTwoY + getTrueSpeed(paddleSpeed, dt)
+  end
 end
 
 --[[
@@ -66,10 +96,10 @@ function love.draw()
     --
 
     -- render first paddle (left side)
-    love.graphics.rectangle('fill', 10, gameHeight / 2 - 10, 5, 20)
+    love.graphics.rectangle('fill', 10, playerOneY, 5, 20)
 
     -- render second paddle (right side)
-    love.graphics.rectangle('fill', gameWidth - 10, gameHeight / 2 - 10, 5, 20)
+    love.graphics.rectangle('fill', gameWidth - 10, playerTwoY, 5, 20)
 
     -- render ball (center)
     love.graphics.rectangle('fill', gameWidth / 2 - 2, gameHeight / 2 - 2, 4, 4)
