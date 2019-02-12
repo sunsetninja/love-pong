@@ -29,6 +29,8 @@ function love.load()
   -- game fonts
   smallFont = love.graphics.newFont('font.ttf', 8)
   scoreFont = love.graphics.newFont('font.ttf', 32)
+
+  gameTitle = 'Love pong'
   
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
     fullscreen = false,
@@ -75,6 +77,9 @@ function love.update(dt)
   if gameState == 'play' then
     ballX = ballX + getTrueSpeed(ballDX, dt)
     ballY = ballY + getTrueSpeed(ballDY, dt)
+    gameTitle = 'Good luck'
+  elseif gameState == 'start' then
+    gameTitle = 'Love pong'
   end
 end
 
@@ -97,7 +102,7 @@ function love.keypressed(key)
       ballY = gameHeight / 2 - 2
 
       ballDX = math.random(2) == 1 and 100 or -100
-      ballDY = math.random(-50, 50)
+      ballDY = math.random(-50, 50) * 1.5
     end
   end
 end
@@ -122,7 +127,7 @@ function love.draw()
     love.graphics.setFont(smallFont)
 
     -- using virtual width and height now for text placement
-    love.graphics.printf('Love Pong', 0, 20, gameWidth, 'center')
+    love.graphics.printf(gameTitle, 0, 20, gameWidth, 'center')
 
     -- draw players scores
     love.graphics.setFont(scoreFont)
