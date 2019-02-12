@@ -1,21 +1,19 @@
 local push = require("libs/push")
+Class = require('libs/class')
 
-local gameWidth = 432
-local gameHeight = 243
+require('utils')
+
+-- feaures
+require('features/Paddle')
+
+gameWidth = 432
+gameHeight = 243
 
 -- size of our actual window
 local windowWidth = 1280
 local windowHeight = 720
 
 local paddleSpeed = 200
-
-function getTrueColor(color)
-  return color / 255
-end
-
-function getTrueSpeed(speed, dt)
-  return speed * dt
-end
 
 -- Initial love function
 function love.load()
@@ -45,8 +43,8 @@ function love.load()
   ballX = gameWidth / 2 - 2
   ballY = gameHeight / 2 - 2
 
-  playerOneY = 30
-  playerTwoY = gameHeight - 50
+  playerOne = Paddle(10, 30, 5, 20)
+  playerTwo = Paddle(gameWidth - 15, gameHeight - 30, 5, 20)
 
   -- velocity
   -- 50% chanse to move left or right
@@ -62,16 +60,20 @@ end
 function love.update(dt)
   -- Players movements
   if love.keyboard.isDown('w') then
-    playerOneY = math.max(0, playerOneY - getTrueSpeed(paddleSpeed, dt))
+    playerOne.dy = -paddleSpeed
   elseif (love.keyboard.isDown('s')) then
-    playerOneY = math.min(gameHeight - 20, playerOneY + getTrueSpeed(paddleSpeed, dt))
+    playerOne.dy = paddleSpeed
+  else
+    playerOne.dy = 0
   end
 
 
   if love.keyboard.isDown('up') then
-    playerTwoY = math.max(0, playerTwoY - getTrueSpeed(paddleSpeed, dt))
+    playerTwo.dy = -paddleSpeed
   elseif love.keyboard.isDown('down') then
-    playerTwoY = math.min(gameHeight - 20, playerTwoY + getTrueSpeed(paddleSpeed, dt))
+    playerTwo.dy = paddleSpeed
+  else
+    playerTwo.dy = 0
   end
 
   if gameState == 'play' then
@@ -81,6 +83,9 @@ function love.update(dt)
   elseif gameState == 'start' then
     gameTitle = 'Love pong'
   end
+
+  playerOne:update(dt)
+  playerTwo:update(dt)
 end
 
 --[[
@@ -144,11 +149,9 @@ function love.draw()
       gameHeight / 3
     )
 
-    -- render first paddle (left side)
-    love.graphics.rectangle('fill', 10, playerOneY, 5, 20)
-
-    -- render second paddle (right side)
-    love.graphics.rectangle('fill', gameWidth - 10, playerTwoY, 5, 20)
+    -- render paddles
+    playerOne:render()
+    playerTwo:render()
 
     -- render ball (center)
     love.graphics.rectangle('fill', ballX, ballY, 4, 4)
