@@ -5,6 +5,7 @@ require('utils')
 
 -- feaures
 require('features/Paddle')
+require('features/Ball')
 
 gameWidth = 432
 gameHeight = 243
@@ -40,17 +41,10 @@ function love.load()
   playerTwoScore = 0
 
   -- initial positions
-  ballX = gameWidth / 2 - 2
-  ballY = gameHeight / 2 - 2
-
   playerOne = Paddle(10, 30, 5, 20)
   playerTwo = Paddle(gameWidth - 15, gameHeight - 30, 5, 20)
 
-  -- velocity
-  -- 50% chanse to move left or right
-  ballDX = math.random(2) == 1 and 100 or -100
-  -- random angle
-  ballDY = math.random(-50, 50)
+  ball = Ball(gameWidth / 2 - 2, gameHeight / 2 - 2, 4, 4)
 
   -- game state
   gameState = 'start'
@@ -77,9 +71,8 @@ function love.update(dt)
   end
 
   if gameState == 'play' then
-    ballX = ballX + getTrueSpeed(ballDX, dt)
-    ballY = ballY + getTrueSpeed(ballDY, dt)
     gameTitle = 'Good luck'
+    ball:update(dt)
   elseif gameState == 'start' then
     gameTitle = 'Love pong'
   end
@@ -103,11 +96,7 @@ function love.keypressed(key)
     elseif gameState == 'play' then
       gameState = 'start'
 
-      ballX = gameWidth / 2 - 2
-      ballY = gameHeight / 2 - 2
-
-      ballDX = math.random(2) == 1 and 100 or -100
-      ballDY = math.random(-50, 50) * 1.5
+      ball:reset()
     end
   end
 end
@@ -153,8 +142,8 @@ function love.draw()
     playerOne:render()
     playerTwo:render()
 
-    -- render ball (center)
-    love.graphics.rectangle('fill', ballX, ballY, 4, 4)
+    -- render ball
+    ball:render()
 
     -- end rendering at virtual resolution
     push:apply('end')
