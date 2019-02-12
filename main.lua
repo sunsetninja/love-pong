@@ -1,4 +1,4 @@
-local push = require("push")
+local push = require("libs/push")
 
 local gameWidth = 432
 local gameHeight = 243
@@ -27,8 +27,8 @@ function love.load()
   math.randomseed(os.time())
 
   -- game fonts
-  smallFont = love.graphics.newFont('font.ttf', 8)
-  scoreFont = love.graphics.newFont('font.ttf', 32)
+  smallFont = love.graphics.newFont('assets/font.ttf', 8)
+  scoreFont = love.graphics.newFont('assets/font.ttf', 32)
 
   gameTitle = 'Love pong'
   
