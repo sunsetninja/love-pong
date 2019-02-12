@@ -24,10 +24,8 @@ function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   -- game fonts
-  local smallFont = love.graphics.newFont('font.ttf', 8)
-  local scoreFont = love.graphics.newFont('font.ttf', 32)
-
-  love.graphics.setFont(smallFont)
+  smallFont = love.graphics.newFont('font.ttf', 8)
+  scoreFont = love.graphics.newFont('font.ttf', 32)
   
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
     fullscreen = false,
@@ -86,14 +84,27 @@ function love.draw()
       getTrueColor(52),
       255
     )
+    
+    -- draw a title
+    love.graphics.setFont(smallFont)
 
     -- using virtual width and height now for text placement
     love.graphics.printf('Love Pong', 0, 20, gameWidth, 'center')
 
-    --
-    -- paddles are simply rectangles we draw on the screen at certain points,
-    -- as is the ball
-    --
+    -- draw players scores
+    love.graphics.setFont(scoreFont)
+
+    love.graphics.print(
+      tostring(playerOneScore),
+      gameWidth / 2 - 50,
+      gameHeight / 3
+    )
+
+    love.graphics.print(
+      tostring(playerTwoScore),
+      gameWidth / 2 + 30,
+      gameHeight / 3
+    )
 
     -- render first paddle (left side)
     love.graphics.rectangle('fill', 10, playerOneY, 5, 20)
