@@ -23,6 +23,9 @@ function love.load()
   -- and graphics
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- random seed for a ball movements
+  math.randomseed(os.time())
+
   -- game fonts
   smallFont = love.graphics.newFont('font.ttf', 8)
   scoreFont = love.graphics.newFont('font.ttf', 32)
@@ -36,24 +39,42 @@ function love.load()
   playerOneScore = 0
   playerTwoScore = 0
 
+  -- initial positions
+  ballX = gameWidth / 2 - 2
+  ballY = gameHeight / 2 - 2
+
   playerOneY = 30
   playerTwoY = gameHeight - 50
+
+  -- velocity
+  -- 50% chanse to move left or right
+  ballDX = math.random(2) == 1 and 100 or -100
+  -- random angle
+  ballDY = math.random(-50, 50)
+
+  -- game state
+  gameState = 'start'
 end
 
 -- Main loop function
 function love.update(dt)
   -- Players movements
-  if (love.keyboard.isDown('w') and playerOneY > 0) then
-    playerOneY = playerOneY - getTrueSpeed(paddleSpeed, dt)
-  elseif (love.keyboard.isDown('s') and playerOneY < gameHeight - 20) then
-    playerOneY = playerOneY + getTrueSpeed(paddleSpeed, dt)
+  if love.keyboard.isDown('w') then
+    playerOneY = math.max(0, playerOneY - getTrueSpeed(paddleSpeed, dt))
+  elseif (love.keyboard.isDown('s')) then
+    playerOneY = math.min(gameHeight - 20, playerOneY + getTrueSpeed(paddleSpeed, dt))
   end
 
 
-  if (love.keyboard.isDown('up') and playerTwoY > 0) then
-    playerTwoY = playerTwoY - getTrueSpeed(paddleSpeed, dt)
-  elseif (love.keyboard.isDown('down') and playerTwoY < gameHeight - 20) then
-    playerTwoY = playerTwoY + getTrueSpeed(paddleSpeed, dt)
+  if love.keyboard.isDown('up') then
+    playerTwoY = math.max(0, playerTwoY - getTrueSpeed(paddleSpeed, dt))
+  elseif love.keyboard.isDown('down') then
+    playerTwoY = math.min(gameHeight - 20, playerTwoY + getTrueSpeed(paddleSpeed, dt))
+  end
+
+  if gameState == 'play' then
+    ballX = ballX + getTrueSpeed(ballDX, dt)
+    ballY = ballY + getTrueSpeed(ballDY, dt)
   end
 end
 
@@ -64,8 +85,20 @@ end
 function love.keypressed(key)
   -- keys can be accessed by string name
   if key == 'escape' then
-      -- function LÖVE gives us to terminate application
+      -- terminate game
       love.event.quit()
+  elseif key == 'space' then
+    if gameState == 'start' then
+      gameState = 'play'
+    elseif gameState == 'play' then
+      gameState = 'start'
+
+      ballX = gameWidth / 2 - 2
+      ballY = gameHeight / 2 - 2
+
+      ballDX = math.random(2) == 1 and 100 or -100
+      ballDY = math.random(-50, 50)
+    end
   end
 end
 
@@ -113,7 +146,7 @@ function love.draw()
     love.graphics.rectangle('fill', gameWidth - 10, playerTwoY, 5, 20)
 
     -- render ball (center)
-    love.graphics.rectangle('fill', gameWidth / 2 - 2, gameHeight / 2 - 2, 4, 4)
+    love.graphics.rectangle('fill', ballX, ballY, 4, 4)
 
     -- end rendering at virtual resolution
     push:apply('end')
