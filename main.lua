@@ -7,6 +7,10 @@ local gameHeight = 243
 local windowWidth = 1280
 local windowHeight = 720
 
+function getTrueColor(color)
+  return color / 255
+end
+
 -- Initial love function
 function love.load()
   -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text 
@@ -46,7 +50,12 @@ function love.draw()
     push:apply('start')
 
     -- fill background with original pong background color
-    love.graphics.clear(40, 45, 52, 255)
+    love.graphics.clear(
+      getTrueColor(40),
+      getTrueColor(45),
+      getTrueColor(52),
+      255
+    )
 
     -- using virtual width and height now for text placement
     love.graphics.printf('Love Pong', 0, 20, gameWidth, 'center')
