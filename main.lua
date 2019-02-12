@@ -18,6 +18,8 @@ local paddleSpeed = 200
 
 -- Initial love function
 function love.load()
+  love.window.setTitle('Love pong')
+
   -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text 
   -- and graphics
   love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -114,7 +116,7 @@ function love.draw()
       getTrueColor(40),
       getTrueColor(45),
       getTrueColor(52),
-      255
+      1
     )
     
     -- draw a title
@@ -144,6 +146,8 @@ function love.draw()
 
     -- render ball
     ball:render()
+
+    displayFPS()
 
     -- end rendering at virtual resolution
     push:apply('end')
