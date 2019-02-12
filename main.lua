@@ -45,8 +45,25 @@ function love.draw()
     -- begin rendering at virtual resolution
     push:apply('start')
 
+    -- fill background with original pong background color
+    love.graphics.clear(40, 45, 52, 255)
+
     -- using virtual width and height now for text placement
-    love.graphics.printf('Hello Pong!', 0, gameHeight / 2 - 6, gameWidth, 'center')
+    love.graphics.printf('Love Pong', 0, 20, gameWidth, 'center')
+
+    --
+    -- paddles are simply rectangles we draw on the screen at certain points,
+    -- as is the ball
+    --
+
+    -- render first paddle (left side)
+    love.graphics.rectangle('fill', 10, gameHeight / 2 - 10, 5, 20)
+
+    -- render second paddle (right side)
+    love.graphics.rectangle('fill', gameWidth - 10, gameHeight / 2 - 10, 5, 20)
+
+    -- render ball (center)
+    love.graphics.rectangle('fill', gameWidth / 2 - 2, gameHeight / 2 - 2, 4, 4)
 
     -- end rendering at virtual resolution
     push:apply('end')
