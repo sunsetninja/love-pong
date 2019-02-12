@@ -3,9 +3,9 @@ Class = require('libs/class')
 
 require('utils')
 
--- feaures
-require('features/Paddle')
-require('features/Ball')
+-- units
+require('units/Paddle')
+require('units/Ball')
 
 gameWidth = 432
 gameHeight = 243
