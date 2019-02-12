@@ -1,10 +1,19 @@
+local push = require("push")
+
+local gameWidth = 432
+local gameHeight = 243
+
 -- size of our actual window
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+local windowWidth = 1280
+local windowHeight = 720
 
 -- Initial love function
 function love.load()
-  love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
+  -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text 
+  -- and graphics
+  love.graphics.setDefaultFilter('nearest', 'nearest')
+  
+    push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
     fullscreen = false,
     resizable = false,
     vsync = true
@@ -12,11 +21,12 @@ function love.load()
 end
 
 function love.draw()
-  love.graphics.printf(
-    'What a nice pong goes here!',
-    0,
-    WINDOW_HEIGHT / 2 - 6,
-    WINDOW_WIDTH,
-    'center'
-  )
+    -- begin rendering at virtual resolution
+    push:apply('start')
+
+    -- using virtual width and height now for text placement
+    love.graphics.printf('Hello Pong!', 0, gameHeight / 2 - 6, gameWidth, 'center')
+
+    -- end rendering at virtual resolution
+    push:apply('end')
 end
