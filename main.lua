@@ -86,6 +86,21 @@ function love.update(dt)
         ball.y = gameHeight - 4
         ball.dy = -ball.dy
     end
+
+    -- Score update
+    if ball.x < 0 then
+      servingPlayer = 1
+      playerTwoScore = playerTwoScore + 1
+      ball:reset()
+      gameState = 'serve'
+    end
+    
+    if ball.x > gameWidth then
+      servingPlayer = 2
+      playerOneScore = playerOneScore + 1
+      ball:reset()
+      gameState = 'serve'
+    end
   end
   
   -- Players movements
@@ -96,7 +111,6 @@ function love.update(dt)
   else
     playerOne.dy = 0
   end
-
 
   if love.keyboard.isDown('up') then
     playerTwo.dy = -paddleSpeed
