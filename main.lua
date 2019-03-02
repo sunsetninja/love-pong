@@ -28,9 +28,16 @@ function love.load()
   math.randomseed(os.time())
 
   -- game fonts
-  smallFont = love.graphics.newFont('assets/font.ttf', 8)
-  largeFont = love.graphics.newFont('assets/font.ttf', 16)
-  scoreFont = love.graphics.newFont('assets/font.ttf', 32)
+  smallFont = love.graphics.newFont('assets/fonts/pong.ttf', 8)
+  largeFont = love.graphics.newFont('assets/fonts/pong.ttf', 16)
+  scoreFont = love.graphics.newFont('assets/fonts/pong.ttf', 32)
+
+
+  sounds = {
+    ['paddle_hit'] = love.audio.newSource('assets/sounds/paddle_hit.wav', 'static'),
+    ['score'] = love.audio.newSource('assets/sounds/score.wav', 'static'),
+    ['wall_hit'] = love.audio.newSource('assets/sounds/wall_hit.wav', 'static')
+  }
 
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
     fullscreen = false,
@@ -74,6 +81,8 @@ function love.update(dt)
       else
         ball.dy = math.random(10, 150)
       end
+
+      sounds['paddle_hit']:play()
     end
     
     if ball:collides(playerTwo) then
@@ -85,22 +94,29 @@ function love.update(dt)
       else
         ball.dy = math.random(10, 150)
       end
+
+      sounds['paddle_hit']:play()
     end
 
     if ball.y <= 0 then
       ball.y = 0
       ball.dy = -ball.dy
+      
+      sounds['wall_hit']:play()
     end
 
     if ball.y >= gameHeight - 4 then
       ball.y = gameHeight - 4
       ball.dy = -ball.dy
+
+      sounds['wall_hit']:play()
     end
 
     -- Score update
     if ball.x + ball.width < 0 then
       servingPlayer = 1
       playerTwoScore = playerTwoScore + 1
+      sounds['score']:play()
 
       if playerTwoScore == 3 then
         winningPlayer = 2
@@ -114,6 +130,7 @@ function love.update(dt)
     if ball.x > gameWidth then
       servingPlayer = 2
       playerOneScore = playerOneScore + 1
+      sounds['score']:play()
 
       if playerOneScore == 3 then
         winningPlayer = 1
