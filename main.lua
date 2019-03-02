@@ -98,7 +98,7 @@ function love.update(dt)
     end
 
     -- Score update
-    if ball.x < 0 then
+    if ball.x + ball.width < 0 then
       servingPlayer = 1
       playerTwoScore = playerTwoScore + 1
 
