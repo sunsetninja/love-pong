@@ -31,8 +31,6 @@ function love.load()
   smallFont = love.graphics.newFont('assets/font.ttf', 8)
   scoreFont = love.graphics.newFont('assets/font.ttf', 32)
 
-  gameTitle = 'Love pong'
-  
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
     fullscreen = false,
     resizable = false,
@@ -41,6 +39,8 @@ function love.load()
 
   playerOneScore = 0
   playerTwoScore = 0
+
+  servingPlayer = 1
 
   -- initial positions
   playerOne = Paddle(10, 30, 5, 20)
@@ -54,37 +54,46 @@ end
 
 -- Main loop function
 function love.update(dt)
-  if gameState == 'play' then
+  if gameState == 'serve' then
+    ball.dy = math.random(-50, 50)
+    
+    if servingPlayer == 1 then
+      ball.dx = math.random(140, 200)
+    else
+      ball.dx = -math.random(140, 200)
+    end
+  elseif gameState == 'play' then
+    -- Collisions
     if ball:collides(playerOne) then
-        ball.dx = -ball.dx * 1.03
-        ball.x = playerOne.x + playerOne.width
+      ball.dx = -ball.dx * 1.03
+      ball.x = playerOne.x + playerOne.width
 
-        if ball.dy < 0 then
-            ball.dy = -math.random(10, 150)
-        else
-            ball.dy = math.random(10, 150)
-        end
+      if ball.dy < 0 then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
     end
     
     if ball:collides(playerTwo) then
-        ball.dx = -ball.dx * 1.03
-        ball.x = playerTwo.x - ball.width
+      ball.dx = -ball.dx * 1.03
+      ball.x = playerTwo.x - ball.width
 
-        if ball.dy < 0 then
-            ball.dy = -math.random(10, 150)
-        else
-            ball.dy = math.random(10, 150)
-        end
+      if ball.dy < 0 then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
     end
 
     if ball.y <= 0 then
-        ball.y = 0
-        ball.dy = -ball.dy
+      ball.y = 0
+      ball.dy = -ball.dy
     end
 
     if ball.y >= gameHeight - 4 then
-        ball.y = gameHeight - 4
-        ball.dy = -ball.dy
+      ball.y = gameHeight - 4
+      ball.dy = -ball.dy
     end
 
     -- Score update
@@ -121,10 +130,7 @@ function love.update(dt)
   end
 
   if gameState == 'play' then
-    gameTitle = 'Good luck'
     ball:update(dt)
-  elseif gameState == 'start' then
-    gameTitle = 'Love pong'
   end
 
   playerOne:update(dt)
@@ -142,11 +148,9 @@ function love.keypressed(key)
       love.event.quit()
   elseif key == 'space' then
     if gameState == 'start' then
+      gameState = 'serve'
+    elseif gameState == 'serve' then
       gameState = 'play'
-    elseif gameState == 'play' then
-      gameState = 'start'
-
-      ball:reset()
     end
   end
 end
@@ -170,9 +174,6 @@ function love.draw()
     -- draw a title
     love.graphics.setFont(smallFont)
 
-    -- using virtual width and height now for text placement
-    love.graphics.printf(gameTitle, 0, 20, gameWidth, 'center')
-
     -- draw players scores
     love.graphics.setFont(scoreFont)
 
@@ -187,6 +188,21 @@ function love.draw()
       gameWidth / 2 + 30,
       gameHeight / 3
     )
+
+    if gameState == 'start' then
+      love.graphics.setFont(smallFont)
+      love.graphics.printf('Love Pong!', 0, 10, gameWidth, 'center')
+      love.graphics.printf('Press spacebar to begin!', 0, 20, gameWidth, 'center')
+    elseif gameState == 'serve' then
+      love.graphics.setFont(smallFont)
+      love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!", 
+        0, 10, gameWidth, 'center')
+      love.graphics.printf('Press spacebar to serve!', 0, 20, gameWidth, 'center')
+    elseif gameState == 'play' then
+      love.graphics.setFont(smallFont)
+      love.graphics.printf('Good luck!', 0, 10, gameWidth, 'center')
+        -- no UI messages to display in play
+    end
 
     -- render paddles
     playerOne:render()
