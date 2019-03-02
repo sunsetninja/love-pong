@@ -54,6 +54,40 @@ end
 
 -- Main loop function
 function love.update(dt)
+  if gameState == 'play' then
+    if ball:collides(playerOne) then
+        ball.dx = -ball.dx * 1.03
+        ball.x = playerOne.x + playerOne.width
+
+        if ball.dy < 0 then
+            ball.dy = -math.random(10, 150)
+        else
+            ball.dy = math.random(10, 150)
+        end
+    end
+    
+    if ball:collides(playerTwo) then
+        ball.dx = -ball.dx * 1.03
+        ball.x = playerTwo.x - ball.width
+
+        if ball.dy < 0 then
+            ball.dy = -math.random(10, 150)
+        else
+            ball.dy = math.random(10, 150)
+        end
+    end
+
+    if ball.y <= 0 then
+        ball.y = 0
+        ball.dy = -ball.dy
+    end
+
+    if ball.y >= gameHeight - 4 then
+        ball.y = gameHeight - 4
+        ball.dy = -ball.dy
+    end
+  end
+  
   -- Players movements
   if love.keyboard.isDown('w') then
     playerOne.dy = -paddleSpeed
