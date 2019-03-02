@@ -36,8 +36,12 @@ function love.load()
   sounds = {
     ['paddle_hit'] = love.audio.newSource('assets/sounds/paddle_hit.wav', 'static'),
     ['score'] = love.audio.newSource('assets/sounds/score.wav', 'static'),
-    ['wall_hit'] = love.audio.newSource('assets/sounds/wall_hit.wav', 'static')
+    ['wall_hit'] = love.audio.newSource('assets/sounds/wall_hit.wav', 'static'),
+    ['dramatic_music'] = love.audio.newSource('assets/sounds/darkeater_midir.mp3', 'static')
   }
+  
+  sounds['dramatic_music']:setLooping(true)
+  isDramaticMusicPlay = false
 
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
     fullscreen = false,
@@ -199,6 +203,14 @@ function love.keypressed(key)
         servingPlayer = 1
       end
     end
+  elseif key == 'd' then
+    if isDramaticMusicPlay == false then
+      sounds['dramatic_music']:play()
+      isDramaticMusicPlay = true
+    else
+      sounds['dramatic_music']:stop()
+      isDramaticMusicPlay = false
+    end
   end
 end
 
@@ -239,7 +251,7 @@ function love.draw()
     if gameState == 'start' then
       love.graphics.setFont(smallFont)
       love.graphics.printf('Love Pong!', 0, 10, gameWidth, 'center')
-      love.graphics.printf('Press spacebar to begin!', 0, 20, gameWidth, 'center')
+      love.graphics.printf('Press spacebar to begin!' .. tostring(isDramaticMusicPlay), 0, 20, gameWidth, 'center')
     elseif gameState == 'serve' then
       love.graphics.setFont(smallFont)
       love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!", 
@@ -263,7 +275,7 @@ function love.draw()
     -- render ball
     ball:render()
 
-    displayFPS()
+    -- displayFPS()
 
     -- end rendering at virtual resolution
     push:apply('end')
